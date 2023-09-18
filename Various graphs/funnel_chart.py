@@ -6,5 +6,6 @@ eu_data = df[df.continent=="Europe"]
 eu_data = eu_data[eu_data.year == 1982].head(20)
 eu_data = eu_data.sort_values(by = "gdpPercap")
 
+#plotting the chart
 fig = px.funnel(eu_data, y='country', x='gdpPercap')
 fig.show()

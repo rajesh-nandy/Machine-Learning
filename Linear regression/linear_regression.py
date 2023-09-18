@@ -13,6 +13,7 @@ class LinearRegression:
         predictions = np.multiply(m, train_input) + c
         return predictions
 
+    #Calculation of error for each point 
     def cost_function(self, predictions, train_output):
         cost = (train_output-predictions)**2
         return cost
