@@ -28,6 +28,8 @@ class tree:
         return splits
 
     def _gini_index(self, p):
+        if(len(p.iloc[:, 0].unique()) == 1):
+            return [0.5, p.iloc[:, 0].unique()]
         
         if(p.iloc[:, 0].dtypes == 'O'):
             l = p.iloc[:, 0].unique()
@@ -46,7 +48,7 @@ class tree:
                 weighted_gini_value = left_gini*left_weight + right_gini*right_weight
                 G.append(weighted_gini_value)
                 
-
+            
             s = G.index(min(G))
             return [min(G), splits[s]]
             
@@ -74,6 +76,8 @@ class tree:
             
             weight_list.append(g)
         
+        print(x ,'\n lol',  feature_set)
+            
         z = weight_list.index(min(weight_list))
         #print(weight_list)
         return feature_set[z], weight_list[z][1]
@@ -88,14 +92,13 @@ class tree:
         else:
             feature, split = self._select_next_feature(x, feature_set, target)
             print(feature, split)
-            feature_set.remove(feature)
             
             if(x[feature].dtypes == 'O'):
                 right = x[x[feature].isin(split)]
                 left = x[~x[feature].isin(split)]
             else:
                 right = x[x[feature]>(split)]
-                left = x[~x[feature]<=isin(split)]
+                left = x[~x[feature]<=(split)]
 
             parent_node.feature = feature
             parent_node.threshold = threshold
