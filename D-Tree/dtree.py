@@ -20,9 +20,7 @@ df['workclass'].replace(' ?', np.NaN, inplace=True)
 df['occupation'].replace(' ?', np.NaN, inplace=True)
 df['country'].replace(' ?', np.NaN, inplace=True)
 
-"""print(df[categorical].isnull().sum())
-for i in categorical:    
-    print(i, ' contains ', len(df[i].unique()), ' labels')"""
+#print(df[categorical].isnull().sum())
 
 
 
@@ -38,11 +36,18 @@ for data in [x_train,x_test]:
     data['occupation'].fillna(x_train['occupation'].mode()[0],inplace=True)
     data['country'].fillna(x_train['country'].mode()[0],inplace=True)
 
-#print(x_test[categorical].isnull().sum())
-categorical = ['marital_status', 'workclass', 'age', 
+
+"""print(x_test[categorical].isnull().sum())
+for i in categorical:    
+    print(i, ' contains ', len(df[i].unique()), ' labels')
+
+exit(1)"""
+
+
+feature_set = ['marital_status', 'workclass', 'age', 
              'race', 'sex',]
 dt = tree.tree()
-dt.grow_tree(x, categorical, 'income')
+dt.grow_tree(x_train, dt.root, None, feature_set, 'income')
 
 
 

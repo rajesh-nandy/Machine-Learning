@@ -14,7 +14,7 @@ class node:
 
 class tree:
     def __init__(self):
-        self.root = None
+        self.root = node()
 
     
     def _split_list(self, list1):
@@ -75,14 +75,37 @@ class tree:
             weight_list.append(g)
         
         z = weight_list.index(min(weight_list))
-        print(weight_list)
+        #print(weight_list)
         return feature_set[z], weight_list[z][1]
         
     
     
     
-    def grow_tree(self, x, feature_set, target ):
-        feature, split = self._select_next_feature(x, feature_set, target)
-        print(feature, split)
+    def grow_tree(self, x, parent_node, threshold, feature_set, target ):
+        if(len(x[target].unique()) == 1):
+            print("reached a leaf node!!")
+            parent_node.value = x[target].unique()[0]
+        else:
+            feature, split = self._select_next_feature(x, feature_set, target)
+            print(feature, split)
+            feature_set.remove(feature)
+            
+            if(x[feature].dtypes == 'O'):
+                right = x[x[feature].isin(split)]
+                left = x[~x[feature].isin(split)]
+            else:
+                right = x[x[feature]>(split)]
+                left = x[~x[feature]<=isin(split)]
+
+            parent_node.feature = feature
+            parent_node.threshold = threshold
+            parent_node.right = node()
+            parent_node.left = node()
+            self.grow_tree(right, parent_node.right, split, feature_set, target)
+            self.grow_tree(left, parent_node.left, split, feature_set, target)
+            
+
+
+
         
 
