@@ -48,7 +48,8 @@ class tree:
                 
 
             s = G.index(min(G))
-            return [min(G), splits[i]]
+            return [min(G), splits[s]]
+            
 
         else:
             mean = p.iloc[:, 0].mean()
@@ -70,11 +71,13 @@ class tree:
         for i in feature_set:
             print("Calculating genie of ", i)
             g = self._gini_index(x[[i, target]])
+            
             weight_list.append(g)
         
         z = weight_list.index(min(weight_list))
+        print(weight_list)
         return feature_set[z], weight_list[z][1]
-        exit(1)
+        
     
     
     
