@@ -44,10 +44,10 @@ for i in categorical:
 
 exit(1)"""
 
-p = ['marital_status', 'workclass', 'age', 
+p = ['marital_status', 'workclass', 
              'race', 'sex','income']
-feature_set = ['age','marital_status', 'workclass',  
-             'race', 'sex',]
+feature_set = ['marital_status', 'workclass',  
+             'race', 'sex']
 x_train = x_train[p]
 dt = tree.tree()
 dt.grow_tree(x_train, dt.root, None, feature_set, 'income')

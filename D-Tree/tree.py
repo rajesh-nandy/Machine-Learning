@@ -80,7 +80,7 @@ class tree:
             weight_list.append(g)
         
         
-        print("error point",weight_list)
+        #print(x)
         
             
         z = weight_list.index(min(weight_list))
@@ -100,24 +100,25 @@ class tree:
             
             if(len(x[feature].unique()) == 1):
                 print("reached a leaf node with approx value!!")
-                parent_node.value = x[target].mean()[0]
-                print(x[target].mean()[0])
-                exit(1)
-            elif(x[feature].dtypes == 'O'):
-                right = x[x[feature].isin(split)]
-                left = x[~x[feature].isin(split)]
-            else:
-                s = float(split[0])
-                right = x[x[feature] > s]
-                left = x[~x[feature] <= s]
-
-            parent_node.feature = feature
-            parent_node.threshold = threshold
-            parent_node.right = node()
-            parent_node.left = node()
-            self.grow_tree(right, parent_node.right, split, feature_set, target)
-            self.grow_tree(left, parent_node.left, split, feature_set, target)
+                parent_node.value = x[target].mode()[0]
+                
             
+            else:
+                if(x[feature].dtypes == 'O'):
+                    right = x[x[feature].isin(split)]
+                    left = x[~x[feature].isin(split)]
+                else:
+                    s = float(split[0])
+                    right = x[x[feature] > s]
+                    left = x[~x[feature] <= s]
+
+                parent_node.feature = feature
+                parent_node.threshold = threshold
+                parent_node.right = node()
+                parent_node.left = node()
+                self.grow_tree(right, parent_node.right, split, feature_set, target)
+                self.grow_tree(left, parent_node.left, split, feature_set, target)
+                
 
 
 
