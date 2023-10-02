@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np 
 import tree
 
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -45,7 +46,7 @@ exit(1)"""
 
 p = ['marital_status', 'workclass', 'age', 
              'race', 'sex','income']
-feature_set = ['marital_status', 'workclass', 'age', 
+feature_set = ['age','marital_status', 'workclass',  
              'race', 'sex',]
 x_train = x_train[p]
 dt = tree.tree()

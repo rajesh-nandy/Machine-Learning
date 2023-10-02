@@ -29,9 +29,12 @@ class tree:
 
     def _gini_index(self, p):
         if(len(p.iloc[:, 0].unique()) == 1):
-            return [0.5, p.iloc[:, 0].unique()]
+            probabilities = p.value_counts(normalize=True)
+            gini_value = 1 - np.sum(probabilities**2)
+            m = (p.iloc[:, 0].unique()).tolist()
+            return [gini_value, m]
         
-        if(p.iloc[:, 0].dtypes == 'O'):
+        elif(p.iloc[:, 0].dtypes == 'O'):
             l = p.iloc[:, 0].unique()
             splits = self._split_list(l)[:-1]
             G = []
@@ -63,7 +66,7 @@ class tree:
             left_weight, right_weight = len(left)/len(p), len(right)/len(p)
 
             weighted_gini_value = left_gini*left_weight + right_gini*right_weight
-            return [weighted_gini_value, mean]
+            return [weighted_gini_value, [str(mean)]]
 
 
 
@@ -76,7 +79,9 @@ class tree:
             
             weight_list.append(g)
         
-        print(x ,'\n lol',  feature_set)
+        
+        print("error point",weight_list)
+        
             
         z = weight_list.index(min(weight_list))
         #print(weight_list)
@@ -93,12 +98,18 @@ class tree:
             feature, split = self._select_next_feature(x, feature_set, target)
             print(feature, split)
             
-            if(x[feature].dtypes == 'O'):
+            if(len(x[feature].unique()) == 1):
+                print("reached a leaf node with approx value!!")
+                parent_node.value = x[target].mean()[0]
+                print(x[target].mean()[0])
+                exit(1)
+            elif(x[feature].dtypes == 'O'):
                 right = x[x[feature].isin(split)]
                 left = x[~x[feature].isin(split)]
             else:
-                right = x[x[feature]>(split)]
-                left = x[~x[feature]<=(split)]
+                s = float(split[0])
+                right = x[x[feature] > s]
+                left = x[~x[feature] <= s]
 
             parent_node.feature = feature
             parent_node.threshold = threshold
