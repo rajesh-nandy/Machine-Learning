@@ -80,23 +80,23 @@ class tree:
             weight_list.append(g)
         
         
-        #print(x)
+        
         
             
         z = weight_list.index(min(weight_list))
-        #print(weight_list)
         return feature_set[z], weight_list[z][1]
         
     
     
     
     def grow_tree(self, x, parent_node, threshold, feature_set, target ):
+        parent_node.threshold = threshold
         if(len(x[target].unique()) == 1):
             print("reached a leaf node!!")
             parent_node.value = x[target].unique()[0]
         else:
             feature, split = self._select_next_feature(x, feature_set, target)
-            print(feature, split)
+            #print(feature, split)
             
             if(len(x[feature].unique()) == 1):
                 print("reached a leaf node with approx value!!")
@@ -113,13 +113,31 @@ class tree:
                     left = x[~x[feature] <= s]
 
                 parent_node.feature = feature
-                parent_node.threshold = threshold
                 parent_node.right = node()
                 parent_node.left = node()
                 self.grow_tree(right, parent_node.right, split, feature_set, target)
                 self.grow_tree(left, parent_node.left, split, feature_set, target)
                 
+    def predict_data(self, x):
+        check_node = node()
+        check_node = self.root
+        
+        while(check_node.value is None):
+            print("value = ", check_node.value, check_node.feature)
+            if(x[check_node.feature].dtypes == 'O'):
+                z = x[check_node.feature].tolist()
+                if(z[0] in (check_node.right.threshold)):
+                    check_node = check_node.right
+                else:
+                    check_node = check_node.left
+            else:
+                s = float(check_node.right.threshold)
+                if(z[0]>s):
+                    check_node = check_node.right
+                else:
+                    check_node = check_node.left
 
+        print(check_node.value, x['income'])
 
 
         
