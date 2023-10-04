@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np 
+import networkx as nx
 import itertools
+from matplotlib import pyplot as plt
+from treelib import Node, Tree
 
 class node:
     def __init__(self, feature = None, threshold = None, right = None, left = None, *, value = None):
@@ -15,6 +18,9 @@ class node:
 class tree:
     def __init__(self):
         self.root = node()
+        self.g = Tree()
+        self.n = 0
+        
 
     
     def _split_list(self, list1):
@@ -118,27 +124,67 @@ class tree:
                 self.grow_tree(right, parent_node.right, split, feature_set, target)
                 self.grow_tree(left, parent_node.left, split, feature_set, target)
                 
-    def predict_data(self, x):
+    def _prediction(self, x):
         check_node = node()
         check_node = self.root
+        print("test", x[check_node.feature])
         
         while(check_node.value is None):
-            print("value = ", check_node.value, check_node.feature)
-            if(x[check_node.feature].dtypes == 'O'):
-                z = x[check_node.feature].tolist()
-                if(z[0] in (check_node.right.threshold)):
-                    check_node = check_node.right
-                else:
-                    check_node = check_node.left
+            print(check_node.feature)
+            
+            z = x[check_node.feature]
+            
+            if(z in (check_node.right.threshold)):
+                check_node = check_node.right
             else:
-                s = float(check_node.right.threshold)
-                if(z[0]>s):
-                    check_node = check_node.right
-                else:
-                    check_node = check_node.left
-
-        print(check_node.value, x['income'])
-
-
+                check_node = check_node.left
         
 
+        #print(check_node.value, x['income'])
+        return check_node.value
+
+
+    def predict_data(self, X):
+        pred = []
+        for each_line in X.index:
+            z = X.loc[each_line]
+            pred.append(self._prediction(z))
+
+       
+        return pred
+
+
+    def tree_display(self, current_node, s=" "):
+        if(current_node.value is None):
+            print(current_node.feature,": ", current_node.right.threshold)
+            s = s + "--> "
+            print(s, end = "")
+            self.tree_display(current_node.right, s)
+            print(s, end = "")
+            self.tree_display(current_node.left)
+
+        else:
+            print(s, "class: ", current_node.value)
+            
+
+
+    def _treecreation(self, n1, current_node):
+        n2 = self.n
+        self.n += 1
+        
+        if(current_node.value is None):
+            self.g.create_node(current_node.feature, self.n, parent = n1)
+            self._treecreation(n2, current_node.right)
+            self._treecreation(n2, current_node.left)
+        else:
+            self.g.create_node(current_node.value, self.n, parent = n1)
+            
+            
+        
+
+        
+    def tree_visualization(self):
+        self.g.create_node(self.root.feature, self.n)
+        self._treecreation(self.n, self.root.right)
+        self._treecreation(self.n, self.root.left)
+        print(self.g)
